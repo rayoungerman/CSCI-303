@@ -1,0 +1,336 @@
+#Latex File for Homework 1
+\documentclass[11pt]{article}
+
+\usepackage{times,mathptm}
+\usepackage{pifont}
+\usepackage{exscale}
+\usepackage{latexsym}
+\usepackage{amsmath}
+\usepackage{epsfig}
+
+
+
+\textwidth 6.5in
+\textheight 9in
+\oddsidemargin -0.0in
+\topmargin -0.0in
+
+\parindent 0pt     % How much the first word of a paragraph is indented. 
+\parskip 0pt	   % How much extra space to leave between paragraphs.
+
+\begin{document}
+
+\begin{center}             % If you only centering 1 line use \centerline{}
+\begin{LARGE}
+{\bf CSCI 303 Homework 1}
+\end{LARGE}
+\vskip 0.25cm      % vertical skip (0.25 cm)
+
+\end{center}
+\begin{center}
+
+
+
+
+{\bf Due: 12:30, Thursday, February 9} \\  % force new line
+Rebecca Youngerman  %update me!!
+\end{center}
+*Following the Collaboration Policy, I collaborated with Mollie Gaines and Alessandro Lamacchia on this homework\\
+Homework will be due at the BEGINNING of class on the date due. Your answers should be written
+legibly if handwritten and your name should be clearly written on your homework assignment. Try to
+make your answers as clear and concise as possible; style will count in your overall mark. Be sure to read
+and know the collaboration policy in the course syllabus. Be sure to check the back of the page; problems
+occasionally show up there too!
+Assignments are expected to be turned in electronically in pdf format. If you do assignments by hand, you
+will need to scan in your results to turn them in. Instructions for how to electronically submit assignments
+will be given in class and on the class website.
+For all homework problems where you are asked to give an algorithm, you must prove the correctness
+of your algorithm and establish the best upper bound that you can give for the running time. You should
+always write a clear informal description of your algorithm in English. You may also write pseudocode if
+you feel your informal explanation requires more precision and detail, but keep in mind pseudocode does
+NOT substitute for an explanation. Again, try to make your answers as clear and concise as possible.
+
+
+\begin{enumerate}
+
+\item On a platform of your choice, implement the three different methods for computing the Fibonacci
+numbers (recursive, iterative, and matrix) discussed in lecture. Use integer variables. How fast does
+each method appear to be? Give precise timings if possible. (This is deliberately open-ended; give
+what you feel is a reasonable answer. You will need to figure out how to time processes on the system
+you are using, if you do not already know.) Can you determine the first Fibonacci number where you
+reach integer overflow? (If your platform does not have integer overflow – lucky you! – you might
+see how far each process gets after five minutes.)\\
+\\
+Since you should reach integer overflow with the faster methods quite quickly, modify your programs
+so that they return the Fibonacci numbers modulo 65536 = 216. (In other words, make all of your
+arithmetic modulo 216 – this will avoid overflow! You must do this regardless of whether or not your
+system overflows.) For each method, what is the largest Fibonacci number you can compute in one
+minute of machine time?\\
+\\
+Submit your source code with your assignment. Please give a reasonable English explanation of your
+experience with your program(s).
+\\\\
+In 5 minutes, my recursive Fibonacci program printed the first 41 numbers - up to 267914296. (it printed the 42nd Fibonacci number (433494437) in 374.301361 seconds.\\
+In five minutes, my iterative Fibonacci program printed the first 38505 Fibonacci numbers (it printed the 38506th Fibonacci number in 300.000944 seconds).\\
+In five minutes, my matrix Fibonacci program printed the first 87252 Fibonacci numbers (it printed the 87253th Fibonacci number in 300.006972 seconds).\\
+
+When I return the Fibonacci numbers modulo 25536, the largest Fibonacci number that the recursive program can compute in one minute is the 39th number.\\
+The iterative program, using modulo 26134, computed the 20589th Fibonacci number in one minute. \\
+The matrix program, using modulo 25536, computed the 2274128th Fibonacci number in one minute\\\\
+Overall, past a certain point, as seen when running for five minutes, the matrix method becomes the fastest. In one minute, though, the iterative method was faster. Depending on what computations are being done, different methods will be more useful. In general, the recursive method is the slowest because it must do so many calculations to obtain larger Fibonacci numbers. \\\\
+These explanations are proven by the runtimes. The recursive method has a runtime of $ O(2^n)$, the iterative method has a runtime of $O(n)$ (linear), and the matrix implementation has a runtime of $O(logn)$
+\\\\
+Source Code:
+\begin{verbatim}
+import time
+
+def fib1(n):
+    if n == 1 or n == 2:
+        return 1 %65536
+    return (fib1(n-1)%65536) + (fib1(n-2)%65536)
+
+
+def fib2(n):
+    a,b = 1, 1
+    for i in range(n-1):
+        a, b = (b%65536, ((a+b)%65536)) 
+    return a %65536
+
+
+def fib3(n):
+
+    v = 1
+    w = 1
+    x = 0
+    y = 0
+
+    while (n > 0):
+        if (n % 2 == 1):
+            z = (x * w)%65536
+            x = (v * w + x * y + z)%65536
+            v = (v * y + z)%65536
+        z = (w * w)%65536
+        w = (2 * y * w + z)%65536
+        y = (y * y + z)%65536
+        n = int(n / 2 )%65536
+    return int(x)
+
+
+
+# just have range to keep it running 
+# and keep track of what number iteration you are on
+for i in range (1, 100000000000):
+    end = time.clock()
+    print(end)
+    if (end) >= 60: #change depending on running for 1 or 5 minutes
+        break
+    print(fib1(i))
+    print("number=", i)
+\end{verbatim}
+In the code shown I edited which fib was being calculated, and either added or did not include the modulo 65536 for the different tests. I also edited after what time the program would break based on whether I would let it run for five minutes or one during the different tests. 
+
+
+
+\item Indicate for each pair of expressions (A, B) in the table below the relationship between A and B.
+Your answer should be in the form of a table with a “yes” or “no” written in each box. For example,
+if A is O(B), then you should put a “yes” in the first box.
+
+\vskip 0.25cm
+\begin{tabular} {  c  c | c | c | c | c | c |}
+ 
+  $A$ & $B$ & $O$ & $o$ & $\Omega$ &$\omega$ & $\Theta$\\ \hline
+  log$n$ & log($n^2$) & yes & no & yes & no & yes \\ \hline
+  log($n!$) & log($n^2$) & yes & no & yes & no & yes \\ \hline
+  $\sqrt[3]{n}$ & (log $n$)$^6$ & no & no & yes & yes & no \\ \hline
+  $n^2$$2^n$ & $3^n$ & yes & yes & no & no & no \\ \hline
+  ($n^2$)! & $n^n$ & no & no & yes & yes & no \\ \hline
+  $\frac{n^2}{\textrm{log }n}$ & $n$ log($n^2$) & no & no & yes & yes & no  \\ \hline
+  $(\textrm{log } n)^{\textrm{log } n}$& $\frac{n}{\textrm{log } (n)}$ & no & no & yes & yes & no \\ \hline
+  100$n$ + log $n$ & $(\textrm{log }n)^3$ + $n$& yes & no & yes & no & yes \\ \hline
+\end{tabular}
+\vskip 0.25cm
+
+
+\item  For all of the problems below, when asked to give an example, you should give a function mapping
+positive integers to positive integers. (No cheating with 0’s!)
+\begin{itemize}
+\item Find (with proof) a function $f_1$ such that $f_1(2n)$ is $O(f_1(n))$.\\\\
+The function that can be used is $f_1 = n$\\
+Prove using the limit definition of Big O:\\
+if $\lim_{x\to\infty}\frac{f(x)}{g(x)}<\infty$; $f(x) = O(g(x))$\\
+$\lim_{n\to\infty}\frac{2n}{n}=2$; $2<\infty$; this shows that:
+$2n = O(n)$\\
+\item Find (with proof) a function $f_2$ such that $f_2(2n)$ is not $O(f_2(n))$.\\\\
+The function that can be used is $f_1 = 2^n$\\
+Prove the contradiction using the limit definition of Big O:\\
+if $\lim_{x\to\infty}\frac{f(x)}{g(x)}<\infty$; $f(x) = O(g(x))$\\
+$\lim_{n\to\infty}\frac{2^{2n}}{2^n}=\infty$; $\infty<\infty$ is not true; this shows that:
+$2n \neq O(n)$\\
+
+Work for the limit:\\
+$\lim_{n\to\infty}\frac{2^{2n}}{2^n}$ $\to$ simplify = $\lim_{x\to\infty}(2^x)$\\
+By the exponant rule:\\
+$\lim_{n\to\infty}(2^x)$ = $\lim_{x\to\infty}(e^{xln(2)})$\\
+Apply the limit chain rule:\\
+$\lim_{n\to\infty}(xln(2)) = \infty$ and $\lim_{u\to\infty}(e^u) = \infty$\\
+So, by the chain rule:\\
+$\lim_{n\to\infty}\frac{2^{2n}}{2^n} = \infty$\
+\\
+\item Prove that is $f(n)$ is $O(g(n))$, and $g(n)$ is $O(h(n))$, then $f(n)$ is $O(h(n))$.\\\\
+Prove using: $f(x) = O(g(x))$ iff there is exists constants $C > 0$, $k>0$ such that $f(x) \leq Cg(x)$ for all $x \geq k$ \\\\
+Known:\\
+$f(x) \leq C_1g(x)$ for all $x \geq k_1$\\
+$g(x) \leq C_2h(x)$ for all $x \geq k_2$ $\to$ $C_1g(x) \leq C_1C_2h(x)$ for all $x \geq k_2$\\\\
+If we have some $k_3$ such that $k_3 \geq k_1$ and $k_3 \geq k_1$ then:\\
+$f(x) \leq C_1g(x) \leq C_1C_2h(x)$ for all $x \geq k_3$\\\\
+Therefore:\\
+$f(x) \leq C_1C_2h(x)$ for all $x \geq k_3$\\\\
+So, $f(n)$ is $O(h(n))$ by the definition using $C = C_1C_2$ and $k = k_3$:\\
+$f(n) \leq Ch(x)$ for all $x \geq k$\\
+
+
+\item Give a proof or a counterexample: if $f$ is not $O(g)$, then $g$ is $O(f)$.\\\\
+By the definition of Big O, if $f$ is not $O(g)$, then there exists no $C$ and $k$ such that:\\
+$f \leq Cg$ for all $x \geq k$\\ 
+So, $f > Cg$ for all $x \geq k$ and equally, $Cg < f$ for all $x \geq k$\\\\
+With this, it is proven that $g$ is $O(f)$:\\
+ $Cg < f$ for all $x \geq k$ $\to$ $g<\frac{1}{C}f$ for all $x \geq k$\\
+ With a new constant $C_1 = \frac{1}{C}$ it is seen that:\\
+ $g \leq C_1f$ for all $x \geq k$\\ 
+
+\item Give a proof or a counterexample: if $f$ is $o(g)$, then $f$ is $O(g)$.\\\\
+By the definition of little o, if $f$ is $o(g)$ then:\\
+$\lim_{x\to\infty}\frac{f(x)}{g(x)} = 0$\\
+By the definition of Big O for $f$ to be $O(g)$:\\
+$\lim_{x\to\infty}\frac{f(x)}{g(x)}$ must be $< \infty$\\
+So if $f$ is $o(g)$, then $f$ is $O(g)$:\\
+$\lim_{x\to\infty}\frac{f(x)}{g(x)} = 0$; $0 < \infty$
+
+\end {itemize}
+
+\item Buffy and Willow are facing an evil demon named Stooge, living inside Willow’s computer. In an
+effort to slow the Scooby Gang’s computing power to a crawl, the demon has replaced Willow’s
+hand-designed super-fast sorting routine with the following recursive sorting algorithm, known as
+StoogeSort. For simplicity, we think of Stoogesort as running on a list of distinct numbers. StoogeSort
+runs in three phases. In the first phase, the first 2/3 of the list is (recursively) sorted. In the second
+phase, the final 2/3 of the list is (recursively) sorted. Finally, in the third phase, the first 2/3 of the
+list is (recursively) sorted again.
+Willow notices some sluggishness in her system, but doesn’t notice any errors from the sorting routine.
+This is because StoogeSort correctly sorts. For the first part of your problem, prove rigorously that
+StoogeSort correctly sorts. (Note: in your proof you should also explain clearly and carefully what
+the algorithm should do and why it works even if the number of items to be sorted is not divisible
+by 3. You may assume all numbers to be sorted are distinct.) But StoogeSort can be slow. Derive
+a recurrence describing its running time, and use the recurrence to bound the asymptotic running
+time of Stoogesort.\\\\
+Stoogesort effectively performs sorting, it will work in a manner like this:\\
+\begin{verbatim}
+Sort(A)
+    Sort(First 2/3 of A)
+    Sort(Last 2/3 of A)
+    Sort(First 2/3 of A)
+    Merge()
+\end{verbatim}
+Proof By Induction:\\
+Base Case: 2 elements in the list to be sorted\\
+(Clearly, for a list of 0 and 1 elements this will work, as these are always sorted)\\
+StoogeSort will begin by sorting the first two thirds third, which is $\frac{4}{3}$ of an element. This will round up and sort both of the elements. \\
+Then it will sort the last third, (both elements again) \\
+Then, sort the first third again. \\
+Finally, it will merge the two elements. \\\\
+Assumption: StoogeSort will work for any array shorter than $A[i...j]$.\\
+Inductive Hypothesis: Show that StoogeSort works for an array of size $A[i...j]$\\
+After the code calls to sort the first $\frac{2}{3}$ of the array $A[i...(j-k)]$ is sorted.\\
+So, every element from element $i+k$ to element $j-k$ is no smaller than the elements from index $i$ to $i+k-1$.\\
+Therefore $A[(i+k)...(j-k)]\geq A[i...(i+k-1)]$\\
+The first has at least the length of the second as well, which is $j-i-2k+1$\\
+When the last $\frac{2}{3}$ are sorted, it is sorting $A[(i+k)...j]$\\
+So, $A[(j-k+1)...j]$ is sorted and $A[(j-k+1)...j]\geq A[(i+k)...(j-k)]$\\
+This leads to the conclusion that $A[(j-k+1)...j]\geq A[i...(i+k-1)]$\\
+Now, after the first $\frac{2}{3}$ and the last $\frac{2}{3}$ we conclude that:\\
+$A(j-k+1)...j]\geq A[i...(j-k)]$\\
+Then the first two thirds are sorted again and the array from $A[i...(j-k)]$ is sorted, and along with knowing what has been sorted in the previous steps the whole array ($A[i...j]$) is sorted. \\\\
+Even if the number of items is not divisible by three, it is clear that the algorithm will sort because when taking $\frac{2}{3}$ of the array it will round up to the next highest integer when taking elements to sort. This will ensure that all of the elements are included in the sort, and likely sorted even multiple times. \\\\
+The recurrence for StoogeSort is $T(n) = 3T(\frac{2}{3}n)+\Theta (1)$\\\\
+This is the recurrence of the running time because the $3T(\frac{2}{3}n)$ represents the three recursive operations done one $\frac{2}{3}$ of the list, and the $\Theta(1)$ is the constant operation of the merge. \\
+Based on the graph of this recurrence, it appears to be $\Theta(n^2)$ time complexity.\\
+
+
+\item  Solve the following recurrences exactly, and then prove your solutions are correct by induction. (Hint:
+Graph values and guess the form of a solution: then prove that your guess is correct.)
+\begin {itemize}
+\item $T(1) = 1$, $T(n) = T(n-1) + 3n-3$\\
+$T(1) = 1$\\
+$T(2) = T(1) +3(2)-3 = 1+6-3= 4$\\
+$T(3) = T(2) + 3(3)-3=4+9-3=10$\\
+$T(4) = T(3) + 3(4)-3=10+12-3=19$\\
+$T(5) = T(4) + 3(5)-3=19+15-3=31$\\
+$T(6) = T(5) + 3(6)-3=31+18-3=46$\\\\
+From the exact solution it appears to be: $\frac{(3n)(n-1)}{2}+1$\\\\
+Proof by Induction:\\
+Base Case:Show P(1) is true\\
+$\frac{3(1)(1-1)}{2}+1= 0+1=1$\\
+
+$T(n) = T(n-1) + 3n-3$\\
+Induction Hypothesis:\\
+Test the exact solution within the recurrence given:\\
+$T(n)=(\frac{(3(n-1))(n-2)}{2}+1) + 3n-3$\\
+$=\frac{3n^2-9n+6}{2}-2+3n$\\
+$=\frac{3n^2-9n+6}{2}-\frac{4}{2}+\frac{6n}{2}$\\
+$=\frac{3n^2-3n+2}{2}$\\
+$=\frac{3n^2-3n}{2}+1$\\
+$=\frac{(3n)(n-1)}{2}+1=$ The exact solution\\
+From the dominating term we see that this is $O(n^2)$
+
+\item $T(1) = 1, T(n) = 2T(n-1)+2n-1$\\
+$T(1) = 1$\\
+$T(2) = 2T(1)+2(2)-1 = 2+4-1=5$\\
+$T(3) = 2T(2)+2(3)-1= 10+6-1=15$\\
+$T(4) = 2T(3) +2(4)-1=30+8-1=37$\\
+$T(5) = 2T(4)+2(5)-1 = 74+10-1=83$\\
+$T(6)=2T(5)+2(6)-1=166+12-1=177$\\\\
+The exact solution is: $3 \times 2^n-2n-3$\\\\
+Proof by Induction:\\
+Base Case: Show P(1) is true\\
+$3 \times 2^1-2(1)-3 = 6-2-3=1$\\\\
+$T(n) = 2T(n-1)+2n-1$\\
+Induction Hypothesis:\\
+Test the exact solution within the recurrence given:\\
+T(n) = $2(3 \times 2^{n-1}-2(n-1)-3 )+ 2n -1$\\
+$= 3 \times 2^n - 4n +4-6+2n-1$\\
+$=3 \times 2^n -2n -3 = $ The exact solution\\
+From the dominating term we see that this is $O(2^n)$
+
+\end {itemize}
+
+
+
+\item Give asymptotic bounds for $T(n)$ in each of the following recurrences. Hint: You may have to change variables somehow in the last one.\\\\
+Using Theorem 2.6 from Mitzenmacher Notes 2:\\
+The solution to the recurrence relation $T(n) = aT(n/b)+cn^k$, where $a\geq 1$ and $b\geq 2$ are integers and $c$ and $k$ are positive constants satisfies:\\
+\begin{equation*} T(n) is \
+\begin{cases}
+O(n^{log_ba})  \hspace{25pt} if a >b^k\\    O(n^klogn)  \hspace{18pt} if a =b^k\\ O(n^k)  \hspace{38pt} if a <b^k \end{cases}
+\end{equation*}
+
+\begin{itemize}
+\item $T(n) = 4T(n/2) + n^3$\\
+$O(n^3)$
+\item $T(n) = 17T(n/4)+n^2$\\
+$O(n^{log_417})$
+\item$T(n)=9T(n/3)+n^2$\\
+$O(n^2logn)$
+\item$T(n)=T(\sqrt{n})+1$\\
+$O(log(logn))$
+\end{itemize}
+
+\item \textbf{Bonus.} Suppose you are given a six-sided die, that might be biased in an unknown way. Explain how to use die rolls to generate unbiased coin flips, and determine the expected number of die rolls until a coin flip is generated. Now suppose you want to generate unbiased die rolls (from a six-sided die) given your potentially biased die. Explain how to do this, and again determine the expected number of biased die rolls until an unbiased die roll is generated. For both problems, you need not give the most efficient solution; however, your solution should be reasonable, and exceptional solutions will
+receive exceptional scores\\\\
+To generate unbiased coin flips from a potentially biased coin I would represent a die roll outputting an odd number and a second as an even as heads, and a die roll outputting an even number and a second that is odd as tails. This would simulate unbiased coin flips because, theoretically, if the die were unbiased it would generate an equal number of odd and even outputs. \\
+The main drawback to this strategy is that die flips that result in the same output (odd, odd or even, even) are omitted. This means, depending on the bias of the die, it will take a different number of rolls to generate a coin flip. \\
+Consider the odds of getting an even number $p$ and the probability of getting an odd number is $q=1-p$\\
+The probability of generating a flip is $2pq$. Taking into account the issue of wasting flips because two evens or two odds occurred together, we can also say that the expected number of remaining flips is the number of times the coin has been flipped over the probability of getting a coin flip each time. This leads the number of rolls to be $\frac{1}{pq}$.\\
+It is more difficult to use this strategy to generate an unbiased die roll. To simulate an unbiased die roll, I would start with the principles in the unbiased coin flip. Then, think of six equally likely possibilities and assign each of those to a die roll. The six possibilities are (using H = heads and T = tails) HTHT, THTH, HTTH, THHT, HHTT, and TTHH. Then, I would apply the same principles that were done in the solution for the unbiased coinflip. Then, the expected number of biased die rolls to generate an unbiased die rolls (using the same $p$ and $q$ from the first problem), is ${\frac{1}{pq}}^4$
+\end{enumerate}
+
+
+\end{document}
